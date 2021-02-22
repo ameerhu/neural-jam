@@ -28,11 +28,19 @@ public class JokeController {
 	private IJokeService jokeService;
 	
 	@GetMapping()
-	public Page<Joke> getJokes(@RequestParam(name = "search", required = false) String search){
+	public Page<Joke> getJokes(
+			@RequestParam(name = "page", required = false) String page,
+			@RequestParam(name = "size", required = false) String size,
+			@RequestParam(name = "search", required = false) String search){
+		
+		PageRequest pageRequest = PageRequest.of(
+				page == null ? 0 : Integer.parseInt(page), 
+				size == null ? 0 : Integer.parseInt(size));
+		
 		if(search == null)
-			return jokeService.getJokes(PageRequest.of(0, 10));
+			return jokeService.getJokes(pageRequest);
 		else
-			return jokeService.getJokes(search, PageRequest.of(0, 10));
+			return jokeService.getJokes(search, pageRequest);
 	}
 	
 	@PostMapping()
